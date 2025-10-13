@@ -22,7 +22,7 @@
 
     <!-- React and ReactDOM (UMD Scripts for browser) -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.client.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     
     <!-- Babel to transpile JSX in the browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -83,11 +83,11 @@
       // --- Component: VideoBackground ---
       const VideoBackground = () => {
         // --- WAŻNE DLA GITHUB HOSTING ---
-        // 1. Wgraj swój plik wideo do repozytorium GitHub.
-        // 2. W ustawieniach repozytorium włącz GitHub Pages (Settings -> Pages -> Deploy from a branch).
-        // 3. Zastąp poniższy URL adresem do Twojego pliku wideo.
-        // Przykładowy format: https://TWOJ-USERNAME.github.io/NAZWA-REPOZYTORIUM/twoj-film.mp4
-        const VIDEO_URL = 'https://github.com/radiohost-cloud/loveluxurylife/blob/main/Unnamed%20(6).mp4';
+        // 1. Wgraj swój plik wideo (np. video-background.mp4) do repozytorium GitHub.
+        // 2. W ustawieniach repozytorium włącz GitHub Pages.
+        // 3. Zastąp poniższy URL pełnym adresem do Twojego pliku wideo.
+        //    Format: https://TWOJ-USERNAME.github.io/NAZWA-REPOZYTORIUM/video-background.mp4
+        const VIDEO_URL = './video-background.mp4';
 
         return (
           <div className="fixed inset-0 -z-10" aria-hidden="true">
@@ -110,11 +110,11 @@
       // --- Main Component: App ---
       const App = () => {
         // --- WAŻNE DLA GITHUB HOSTING ---
-        // 1. Wgraj swój plik awatara (np. .jpg, .png) do repozytorium GitHub.
+        // 1. Wgraj swój plik awatara (np. avatar.jpg) do repozytorium GitHub.
         // 2. W ustawieniach repozytorium włącz GitHub Pages.
-        // 3. Zastąp poniższy URL adresem do Twojego pliku awatara.
-        // Przykładowy format: https://TWOJ-USERNAME.github.io/NAZWA-REPOZYTORIUM/twoj-awatar.jpg
-        const AVATAR_URL = "https://github.com/radiohost-cloud/loveluxurylife/blob/main/Gemini_Generated_Image_51eusc51eusc51eu.png";
+        // 3. Zastąp poniższy URL pełnym adresem do Twojego pliku awatara.
+        //    Format: https://TWOJ-USERNAME.github.io/NAZWA-REPOZYTORIUM/avatar.jpg
+        const AVATAR_URL = "./avatar.jpg";
           
         const DEFAULT_PROFILE = {
           avatarUrl: AVATAR_URL,
@@ -129,7 +129,7 @@
           { id: '4', title: 'Exclusive Newsletter', url: 'https://example.com' },
         ];
 
-        const preloadedState = (window).__PRELOADED_STATE__;
+        const preloadedState = window.__PRELOADED_STATE__;
         const initialProfile = preloadedState?.profile || DEFAULT_PROFILE;
         const initialLinks = preloadedState?.links || DEFAULT_LINKS;
 
