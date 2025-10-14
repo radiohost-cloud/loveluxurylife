@@ -88,6 +88,13 @@
         );
         const videoRef = useRef(null);
 
+        const handleErrorAndAdvance = () => {
+          console.warn('Video playback failed. Advancing to the next one.');
+          // Use sequential advancement on error to avoid getting stuck on a broken video
+          // if the random picker picks it again.
+          setVideoIndex(currentIndex => (currentIndex + 1) % VIDEO_SOURCES.length);
+        };
+
         useEffect(() => {
           const videoElement = videoRef.current;
           if (videoElement) {
@@ -95,9 +102,7 @@
             videoElement.load();
             const playPromise = videoElement.play();
             if (playPromise !== undefined) {
-              playPromise.catch(error => {
-                console.warn("Video autoplay was prevented by the browser:", error);
-              });
+              playPromise.catch(handleErrorAndAdvance);
             }
           }
         }, [videoIndex]);
@@ -114,9 +119,11 @@
           React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
             React.createElement('video', {
               ref: videoRef,
+              autoPlay: true,
               muted: true,
               playsInline: true,
               onEnded: handleVideoEnd,
+              onError: handleErrorAndAdvance,
               className: "w-full h-full object-cover"
             }, "Your browser does not support the video tag."),
             React.createElement('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm" })
@@ -127,7 +134,7 @@
       // from App.tsx
       const DEFAULT_PROFILE = {
         avatarUrl: 'avatar.jpg',
-        name: '',
+        name: 'LoveLuxury Life',
         bio: 'Curating the finest experiences and products for a life well-lived. Discover our exclusive collections below.',
       };
 
