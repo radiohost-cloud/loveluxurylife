@@ -14,19 +14,163 @@
         font-family: 'Manrope', sans-serif;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
-  }
-}
-</script>
 </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module">
+      import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
+      import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+
+      // from types.ts
+      // interfaces are defined in the global scope of this module
+
+      // from hooks/useLocalStorage.ts
+      function useLocalStorage(key, initialValue, preferInitialValue = false) {
+        const [storedValue, setStoredValue] = useState(() => {
+          if (preferInitialValue) {
+            return initialValue;
+          }
+          try {
+            const item = window.localStorage.getItem(key);
+            return item ? JSON.parse(item) : initialValue;
+          } catch (error) {
+            console.error(error);
+            return initialValue;
+          }
+        });
+
+        useEffect(() => {
+          try {
+            const valueToStore =
+              typeof storedValue === 'function'
+                ? storedValue(storedValue)
+                : storedValue;
+            window.localStorage.setItem(key, JSON.stringify(valueToStore));
+          } catch (error) {
+            console.error(error);
+          }
+        }, [key, storedValue]);
+
+        return [storedValue, setStoredValue];
+      }
+
+      // from components/LinkCard.tsx
+      const LinkCard = ({ link }) => {
+        return (
+          React.createElement('div', { className: "relative flex items-center group w-full" },
+            React.createElement('a', {
+              href: link.url,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "w-full text-center bg-gray-800/50 backdrop-blur-sm border-2 border-red-500/50 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-red-500/20 hover:border-red-400 transform hover:-translate-y-1 shadow-lg"
+            },
+            link.title
+            )
+          )
+        );
+      };
+
+      // from components/YouTubeLatestVideos.tsx
+      const VIDEO_SOURCES = [
+        'background/1.mp4',
+        'background/2.mp4',
+        'background/3.mp4',
+        'background/4.mp4',
+        'background/5.mp4',
+        'background/6.mp4',
+      ];
+
+      const VideoBackground = () => {
+        const [videoSrc, setVideoSrc] = useState(null);
+
+        useEffect(() => {
+          const randomIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
+          setVideoSrc(VIDEO_SOURCES[randomIndex]);
+        }, []);
+
+        return (
+          React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
+            videoSrc && (
+              React.createElement('video', {
+                key: videoSrc,
+                autoPlay: true,
+                loop: true,
+                muted: true,
+                playsInline: true,
+                className: "w-full h-full object-cover"
+              },
+                React.createElement('source', { src: videoSrc, type: "video/mp4" }),
+                "Your browser does not support the video tag."
+              )
+            ),
+            React.createElement('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm" })
+          )
+        );
+      };
+      
+      // from App.tsx
+      const DEFAULT_PROFILE = {
+        avatarUrl: 'avatar.jpg',
+        name: 'LoveLuxury Life',
+        bio: 'Curating the finest experiences and products for a life well-lived. Discover our exclusive collections below.',
+      };
+
+      const DEFAULT_LINKS = [
+        { id: '1', title: 'Official Website & Shop', url: 'https://example.com' },
+        { id: '2', title: 'Instagram', url: 'https://instagram.com' },
+        { id: '3', title: 'TikTok', url: 'https://tiktok.com' },
+        { id: '4', title: 'Exclusive Newsletter', url: 'https://example.com' },
+      ];
+
+      const preloadedState = window.__PRELOADED_STATE__;
+      const initialProfile = preloadedState?.profile || DEFAULT_PROFILE;
+      const initialLinks = preloadedState?.links || DEFAULT_LINKS;
+
+      const App = () => {
+        const [profile] = useLocalStorage('loveluxury-profile', initialProfile, !!preloadedState);
+        const [links] = useLocalStorage('loveluxury-links', initialLinks, !!preloadedState);
+
+        return (
+          React.createElement('div', { className: "min-h-screen text-white selection:bg-red-500/30 relative overflow-hidden" },
+            React.createElement(VideoBackground, null),
+            React.createElement('div', { className: "container mx-auto px-4 py-8 md:py-16 relative z-10" },
+              React.createElement('main', { className: "max-w-xl mx-auto flex flex-col items-center pt-12" },
+                React.createElement('div', { className: "relative mb-6" },
+                  React.createElement('img', { 
+                    src: profile.avatarUrl, 
+                    alt: "Profile", 
+                    className: "w-32 h-32 rounded-full object-cover border-4 border-red-500/50 shadow-lg" 
+                  })
+                ),
+                React.createElement('h1', { className: "text-4xl md:text-5xl font-bold text-center mb-2" }, profile.name),
+                React.createElement('p', { className: "text-lg text-gray-300 text-center mb-8" }, profile.bio),
+                React.createElement('div', { className: "w-full flex flex-col items-center space-y-5" },
+                  links.map((link) => 
+                    React.createElement(LinkCard, { 
+                      key: link.id, 
+                      link: link 
+                    })
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      // from index.tsx
+      const rootElement = document.getElementById('root');
+      if (!rootElement) {
+        throw new Error("Could not find root element to mount to");
+      }
+
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(
+        React.createElement(React.StrictMode, null,
+          React.createElement(App, null)
+        )
+      );
+    </script>
   </body>
 </html>
