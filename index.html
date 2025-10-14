@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -71,7 +72,7 @@
               href: link.url,
               target: "_blank",
               rel: "noopener noreferrer",
-              className: "w-full text-center bg-gray-800/50 backdrop-blur-sm border-2 border-red-500/50 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-red-500/20 hover:border-red-400 transform hover:-translate-y-1 shadow-lg"
+              className: "w-full text-center bg-gray-800/50 backdrop-blur-sm text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-red-500/20 transform hover:-translate-y-1 shadow-lg"
             },
             link.title
             )
@@ -139,7 +140,7 @@
         }, []);
 
         return (
-            React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
+            React.createElement('div', { className: "fixed inset-0 -z-10 bg-black", "aria-hidden": "true" },
                 React.createElement('video', {
                     ref: videoRef1,
                     src: videoSources.player1,
@@ -239,7 +240,7 @@
                   React.createElement('img', { 
                     src: profile.avatarUrl, 
                     alt: "Profile", 
-                    className: "w-32 h-32 rounded-full object-cover border-4 border-red-500/50 shadow-lg" 
+                    className: "w-32 h-32 rounded-full object-cover shadow-lg" 
                   })
                 ),
                 React.createElement('h1', { className: "text-4xl md:text-5xl font-bold text-center mb-2" }, profile.name),
