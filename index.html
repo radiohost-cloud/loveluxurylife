@@ -1,180 +1,83 @@
-<!DOCTYPE html>
+echo '<!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LoveLuxury Links</title>
-    <link rel="icon" href="data:image/svg+xml,%3csvg width='200' height='200' viewBox='0 0 200' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='200' height='200' rx='40' fill='black'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='white' font-family='Manrope, sans-serif' font-size='40' font-weight='800'%3e%3ctspan x='50%25' dy='-1.2em'%3elove%3c/tspan%3e%3ctspan x='50%25' dy='1.2em'%3eluxury%3c/tspan%3e%3ctspan x='50%25' dy='1.2em'%3elife%3c/tspan%3e%3c/text%3e%3c/svg%3e">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Luxury Love Background</title>
     <style>
-      body {
-        font-family: 'Manrope', sans-serif;
-      }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        #player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
     </style>
-
-    <!-- React and ReactDOM (UMD Scripts for browser) -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    
-    <!-- Babel to transpile JSX in the browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="player"></div>
+    <div class="content">
+        <h1>Radio Luxury Love</h1>
+        <p>Witaj na stronie z losowym filmem w tle!</p>
+    </div>
 
-    <script type="text/babel">
-      const { useState, useEffect } = React;
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const videoIds = ["XaOIYPNqsXE","GL44I1xuTbI","QHUH7feJz60","O1JYddsSmCI","HsTt8LZ2eMw","CLGo86EDkDw","PqWD8A7Z5aw","HVl5POaVQ04","vzP7S7Qu9Ho","S_-23I3HXeU","l8gUaUlrCh0","OKApOpDCCFE","DMZgb6Hxpr0","0iOWKMf-nP0","Ht8IJPLRx-o","pyBI6Bm6-fA","9pO90EbQm0c","bwDhynxB5f4","2ULs5hJlr5g","LuyzfkRauh8","Qtv7G8M1Ts8","NpKFjauOtyc","nZiGZ_8DqC4","R3EPIOUJKSg","DuyTixzOp-I","1g-dk4j9o_c","y6zQHfyxa-c","zKCkG4X2x6o","Df4gZ_E4OmU","IrobnGpxmRE","0GWzNTbx7pQ","S0lBM7OdDUU","F0FCbnD3_H0","2hb5vqHyhKM"];
 
-      // --- Custom hook: useLocalStorage ---
-      function useLocalStorage(key, initialValue, preferInitialValue = false) {
-        const [storedValue, setStoredValue] = useState(() => {
-          if (preferInitialValue) {
-            return initialValue;
-          }
-          try {
-            const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
-          } catch (error) {
-            console.error(error);
-            return initialValue;
-          }
-        });
+        function getRandomVideoId() {
+            return videoIds[Math.floor(Math.random() * videoIds.length)];
+        }
 
-        useEffect(() => {
-          try {
-            const valueToStore =
-              typeof storedValue === 'function'
-                ? storedValue(storedValue)
-                : storedValue;
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
-          } catch (error) {
-            console.error(error);
-          }
-        }, [key, storedValue]);
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player("player", {
+                height: "100%",
+                width: "100%",
+                videoId: getRandomVideoId(),
+                playerVars: {
+                    autoplay: 1,
+                    mute: 1,
+                    loop: 1,
+                    playlist: getRandomVideoId(),
+                    controls: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
+                    iv_load_policy: 3,
+                    fs: 0,
+                    disablekb: 1
+                },
+                events: {
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
+                }
+            });
+        }
 
-        return [storedValue, setStoredValue];
-      }
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
 
-      // --- Component: LinkCard ---
-      const LinkCard = ({ link }) => {
-        return (
-          <div className="relative flex items-center group w-full">
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full text-center bg-gray-800/50 backdrop-blur-sm border-2 border-red-500/50 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-red-500/20 hover:border-red-400 transform hover:-translate-y-1 shadow-lg"
-            >
-              {link.title}
-            </a>
-          </div>
-        );
-      };
-
-      // --- Component: VideoBackground ---
-      const VideoBackground = () => {
-        // --- KROK 1: SKONFIGURUJ TEN LINK ---
-        // Wgraj plik 'video-background.mp4' do swojego repozytorium GitHub.
-        // Następnie zastąp poniższe symbole '[...]' Twoimi danymi.
-        const VIDEO_URL = 'https://radiohost-cloud.github.io/loveluxurylife/video-background.mp4';
-
-
-        return (
-          <div className="fixed inset-0 -z-10" aria-hidden="true">
-            <video
-              key={VIDEO_URL}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src={VIDEO_URL} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          </div>
-        );
-      };
-
-      // --- Main Component: App ---
-      const App = () => {
-        // --- KROK 2: SKONFIGURUJ TEN LINK ---
-        // Wgraj plik 'avatar.jpg' do swojego repozytorium GitHub.
-        // Następnie zastąp poniższe symbole '[...]' Twoimi danymi.
-        const AVATAR_URL = "https://radiohost-cloud.github.io/loveluxurylife/avatar.jpg";
-          
-        const DEFAULT_PROFILE = {
-          avatarUrl: AVATAR_URL,
-          name: 'LoveLuxury Life',
-          bio: 'Curating the finest experiences and products for a life well-lived. Discover our exclusive collections below.',
-        };
-
-        const DEFAULT_LINKS = [
-          { id: '1', title: 'Official Website & Shop', url: 'https://example.com' },
-          { id: '2', title: 'Instagram', url: 'https://instagram.com' },
-          { id: '3', title: 'TikTok', url: 'https://tiktok.com' },
-          { id: '4', title: 'Exclusive Newsletter', url: 'https://example.com' },
-        ];
-
-        const preloadedState = window.__PRELOADED_STATE__;
-        const initialProfile = preloadedState?.profile || DEFAULT_PROFILE;
-        const initialLinks = preloadedState?.links || DEFAULT_LINKS;
-
-        const [profile] = useLocalStorage('loveluxury-profile', initialProfile, !!preloadedState);
-        const [links] = useLocalStorage('loveluxury-links', initialLinks, !!preloadedState);
-
-        return (
-          <div className="min-h-screen text-white selection:bg-red-500/30 relative overflow-hidden">
-            <VideoBackground />
-            <div className="container mx-auto px-4 py-8 md:py-16 relative z-10">
-              <main className="max-w-xl mx-auto flex flex-col items-center pt-12">
-                
-                <div className="relative mb-6">
-                  <img 
-                    src={profile.avatarUrl} 
-                    alt="Profile" 
-                    className="w-32 h-32 rounded-full object-cover border-4 border-red-500/50 shadow-lg" 
-                  />
-                </div>
-                
-                <h1 className="text-4xl md:text-5xl font-bold text-center mb-2">{profile.name}</h1>
-
-                <p className="text-lg text-gray-300 text-center mb-8">{profile.bio}</p>
-
-                <div className="w-full flex flex-col items-center space-y-5">
-                  {links.map((link) => (
-                    <LinkCard 
-                      key={link.id} 
-                      link={link} 
-                    />
-                  ))}
-                </div>
-              </main>
-            </div>
-          </div>
-        );
-      };
-
-      // --- Mounting logic ---
-      const rootElement = document.getElementById('root');
-      if (rootElement) {
-          const root = ReactDOM.createRoot(rootElement);
-          root.render(
-              <React.StrictMode>
-                  <App />
-              </React.StrictMode>
-          );
-      }
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                player.loadVideoById(getRandomVideoId());
+            }
+        }
     </script>
 </body>
-</html>
+</html>' > /tmp/index.html
