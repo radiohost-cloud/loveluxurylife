@@ -99,15 +99,13 @@
           React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
             React.createElement('video', {
               key: currentVideo,
+              src: currentVideo,
               autoPlay: true,
               muted: true,
               playsInline: true,
               onEnded: handleVideoEnd,
               className: "w-full h-full object-cover"
-            },
-              React.createElement('source', { src: currentVideo, type: "video/mp4" }),
-              "Your browser does not support the video tag."
-            ),
+            }, "Your browser does not support the video tag."),
             React.createElement('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm" })
           )
         );
