@@ -83,34 +83,37 @@
       ];
       
       const VideoBackground = () => {
-        const [currentVideo, setCurrentVideo] = useState(
-          () => VIDEO_SOURCES[Math.floor(Math.random() * VIDEO_SOURCES.length)]
+        const [videoIndex, setVideoIndex] = useState(
+          () => Math.floor(Math.random() * VIDEO_SOURCES.length)
         );
         const videoRef = useRef(null);
 
         useEffect(() => {
-          if (videoRef.current) {
-            videoRef.current.play().catch(error => {
-              console.warn("Video autoplay was prevented by the browser:", error);
-            });
+          const videoElement = videoRef.current;
+          if (videoElement) {
+            videoElement.src = VIDEO_SOURCES[videoIndex];
+            videoElement.load();
+            const playPromise = videoElement.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(error => {
+                console.warn("Video autoplay was prevented by the browser:", error);
+              });
+            }
           }
-        }, [currentVideo]);
+        }, [videoIndex]);
 
         const handleVideoEnd = () => {
-          let nextVideo;
+          let nextIndex;
           do {
-            nextVideo = VIDEO_SOURCES[Math.floor(Math.random() * VIDEO_SOURCES.length)];
-          } while (nextVideo === currentVideo);
-          setCurrentVideo(nextVideo);
+            nextIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
+          } while (nextIndex === videoIndex);
+          setVideoIndex(nextIndex);
         };
 
         return (
           React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
             React.createElement('video', {
               ref: videoRef,
-              key: currentVideo,
-              src: currentVideo,
-              autoPlay: true,
               muted: true,
               playsInline: true,
               onEnded: handleVideoEnd,
@@ -131,7 +134,7 @@
       const DEFAULT_LINKS = [
         { id: '1', title: 'Youtube', url: 'https://www.youtube.com/@radioluxurylove' },
         { id: '2', title: 'Instagram', url: 'https://www.instagram.com/channel/Abbtoj2Ysc3rcLAG/?igsh=MWN4aDNibGd3bjdybw==' },
-        { id: '3', title: 'TikTok', url: 'https://www.tiktok.com/@radiomore.love?_t=ZN-90Y0mN7JpQ6&_r=1' },
+        { id: '3', title: 'TikTok', url: 'https://www.tiktok.com/@radiomore.love?_t=ZN-90Y19Lu0huw&_r=1' },
         { id: '4', title: 'Facebook', url: 'https://www.facebook.com/share/1GPhLrt2u4/?mibextid=wwXIfr' },
       ];
 
