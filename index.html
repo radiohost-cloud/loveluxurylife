@@ -22,6 +22,13 @@
       .animate-vibrate {
         animation: vibrate 0.5s ease-in-out infinite;
       }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin-vinyl {
+        animation: spin 3s linear infinite;
+      }
     </style>
 </head>
   <body>
@@ -165,8 +172,7 @@
       };
 
       // from components/AudioPlayer.tsx
-      const AudioPlayer = () => {
-          const [isPlaying, setIsPlaying] = useState(false);
+      const AudioPlayer = ({ isPlaying, setIsPlaying }) => {
           const audioRef = useRef(null);
           const streamUrl = 'https://stream.radiohost.cloud/listen/test/radio.mp3';
 
@@ -229,20 +235,19 @@
       const App = () => {
         const [profile] = useLocalStorage('loveluxury-profile', initialProfile, !!preloadedState);
         const [links] = useLocalStorage('loveluxury-links', initialLinks, !!preloadedState);
+        const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
         return (
           React.createElement('div', { className: "min-h-screen text-white selection:bg-red-500/30 relative overflow-hidden" },
             React.createElement(VideoBackground, null),
-            React.createElement(AudioPlayer, null),
+            React.createElement(AudioPlayer, { isPlaying: isMusicPlaying, setIsPlaying: setIsMusicPlaying }),
+            React.createElement('img', { 
+                src: profile.avatarUrl, 
+                alt: "Profile", 
+                className: `absolute top-6 left-6 w-20 h-20 rounded-full object-cover shadow-lg z-10 ${isMusicPlaying ? 'animate-spin-vinyl' : ''}`
+            }),
             React.createElement('div', { className: "container mx-auto px-4 py-8 md:py-16 relative z-10" },
               React.createElement('main', { className: "max-w-xl mx-auto flex flex-col items-center pt-12" },
-                React.createElement('div', { className: "relative mb-6" },
-                  React.createElement('img', { 
-                    src: profile.avatarUrl, 
-                    alt: "Profile", 
-                    className: "w-32 h-32 rounded-full object-cover shadow-lg" 
-                  })
-                ),
                 React.createElement('h1', { className: "text-4xl md:text-5xl font-bold text-center mb-2" }, profile.name),
                 React.createElement('p', { className: "text-lg text-gray-300 text-center mb-8" }, profile.bio),
                 React.createElement('div', { className: "w-full flex flex-col items-center space-y-5" },
