@@ -94,9 +94,12 @@
             // Attempt to open the native app
             window.location.href = link.mobileUrl;
 
-            // Fallback to the web URL after a delay, in case the app is not installed
+            // Fallback to the web URL after a delay, but only if the user is still on the page.
+            // This prevents the web URL from opening if the app successfully launched.
             setTimeout(() => {
-              window.open(link.url, '_blank', 'noopener,noreferrer');
+              if (document.hasFocus()) {
+                 window.open(link.url, '_blank', 'noopener,noreferrer');
+              }
             }, 2500);
           }
         };
