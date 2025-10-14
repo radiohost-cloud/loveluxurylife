@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -194,7 +193,7 @@
 
           return React.createElement('button', {
               onClick: togglePlayPause,
-              className: "fixed top-6 right-6 z-50 text-white p-3 rounded-full bg-black/30 backdrop-blur-sm hover:bg-red-500/50 transition-colors duration-300",
+              className: "fixed top-6 right-6 z-50 text-white p-3 rounded-full bg-black/30 backdrop-blur-sm transition-colors duration-300",
               'aria-label': isPlaying ? 'Pause music' : 'Play music'
           },
               React.createElement('svg', {
@@ -247,7 +246,7 @@
                 className: `absolute top-6 left-6 w-20 h-20 rounded-full object-cover shadow-lg z-10 ${isMusicPlaying ? 'animate-spin-vinyl' : ''}`
             }),
             React.createElement('div', { className: "container mx-auto px-4 py-8 md:py-16 relative z-10" },
-              React.createElement('main', { className: "max-w-xl mx-auto flex flex-col items-center pt-12" },
+              React.createElement('main', { className: "max-w-xl mx-auto flex flex-col items-center pt-32" },
                 React.createElement('h1', { className: "text-4xl md:text-5xl font-bold text-center mb-2" }, profile.name),
                 React.createElement('p', { className: "text-lg text-gray-300 text-center mb-8" }, profile.bio),
                 React.createElement('div', { className: "w-full flex flex-col items-center space-y-5" },
