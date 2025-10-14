@@ -14,6 +14,14 @@
       body {
         font-family: 'Manrope', sans-serif;
       }
+      @keyframes vibrate {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(3deg); }
+        75% { transform: rotate(-3deg); }
+      }
+      .animate-vibrate {
+        animation: vibrate 0.5s ease-in-out infinite;
+      }
     </style>
 </head>
   <body>
@@ -90,8 +98,6 @@
 
         const handleErrorAndAdvance = () => {
           console.warn('Video playback failed. Advancing to the next one.');
-          // Use sequential advancement on error to avoid getting stuck on a broken video
-          // if the random picker picks it again.
           setVideoIndex(currentIndex => (currentIndex + 1) % VIDEO_SOURCES.length);
         };
 
@@ -131,6 +137,50 @@
         );
       };
       
+      // from components/AudioPlayer.tsx
+      const AudioPlayer = () => {
+          const [isPlaying, setIsPlaying] = useState(false);
+          const audioRef = useRef(null);
+          const streamUrl = 'https://stream.radiohost.cloud/listen/test/radio.mp3';
+
+          const togglePlayPause = () => {
+              if (!audioRef.current) {
+                  audioRef.current = new Audio(streamUrl);
+              }
+
+              if (isPlaying) {
+                  audioRef.current.pause();
+              } else {
+                  audioRef.current.play().catch(error => {
+                      console.error("Audio playback failed:", error);
+                      setIsPlaying(false);
+                  });
+              }
+              setIsPlaying(!isPlaying);
+          };
+
+          return React.createElement('button', {
+              onClick: togglePlayPause,
+              className: "fixed top-6 right-6 z-50 text-white p-3 rounded-full bg-black/30 backdrop-blur-sm hover:bg-red-500/50 transition-colors duration-300",
+              'aria-label': isPlaying ? 'Pause music' : 'Play music'
+          },
+              React.createElement('svg', {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  fill: "none",
+                  viewBox: "0 0 24 24",
+                  strokeWidth: 1.5,
+                  stroke: "currentColor",
+                  className: `w-6 h-6 ${isPlaying ? 'animate-vibrate' : ''}`
+              },
+                  React.createElement('path', {
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      d: "M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z"
+                  })
+              )
+          );
+      };
+
       // from App.tsx
       const DEFAULT_PROFILE = {
         avatarUrl: 'avatar.jpg',
@@ -156,6 +206,7 @@
         return (
           React.createElement('div', { className: "min-h-screen text-white selection:bg-red-500/30 relative overflow-hidden" },
             React.createElement(VideoBackground, null),
+            React.createElement(AudioPlayer, null),
             React.createElement('div', { className: "container mx-auto px-4 py-8 md:py-16 relative z-10" },
               React.createElement('main', { className: "max-w-xl mx-auto flex flex-col items-center pt-12" },
                 React.createElement('div', { className: "relative mb-6" },
