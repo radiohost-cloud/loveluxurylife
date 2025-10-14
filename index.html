@@ -86,12 +86,29 @@
 
       // from components/LinkCard.tsx
       const LinkCard = ({ link }) => {
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        const handleClick = (e) => {
+          if (isMobile && link.mobileUrl) {
+            e.preventDefault();
+            
+            // Attempt to open the native app
+            window.location.href = link.mobileUrl;
+
+            // Fallback to the web URL after a delay, in case the app is not installed
+            setTimeout(() => {
+              window.open(link.url, '_blank', 'noopener,noreferrer');
+            }, 2500);
+          }
+        };
+
         return (
           React.createElement('div', { className: "relative flex items-center group w-full" },
             React.createElement('a', {
               href: link.url,
               target: "_blank",
               rel: "noopener noreferrer",
+              onClick: handleClick,
               className: "w-full text-center bg-gray-800/50 backdrop-blur-sm text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-red-500/20 transform hover:-translate-y-1 shadow-lg"
             },
             link.title
@@ -196,10 +213,10 @@
       };
 
       const DEFAULT_LINKS = [
-        { id: '1', title: 'Youtube', url: 'https://www.youtube.com/@radioluxurylove' },
-        { id: '2', title: 'Instagram', url: 'https://www.instagram.com/channel/Abbtoj2Ysc3rcLAG/?igsh=MWN4aDNibGd3bjdybw==' },
-        { id: '3', title: 'TikTok', url: 'https://www.tiktok.com/@radiomore.love?_t=ZN-90Y19Lu0huw&_r=1' },
-        { id: '4', title: 'Facebook', url: 'https://www.facebook.com/share/1GPhLrt2u4/?mibextid=wwXIfr' },
+        { id: '1', title: 'Youtube', url: 'https://www.youtube.com/@radioluxurylove', mobileUrl: 'youtube://www.youtube.com/@radioluxurylove' },
+        { id: '2', title: 'Instagram', url: 'https://www.instagram.com/channel/Abbtoj2Ysc3rcLAG/', mobileUrl: 'instagram://channel?id=Abbtoj2Ysc3rcLAG' },
+        { id: '3', title: 'TikTok', url: 'https://www.tiktok.com/@radiomore.love', mobileUrl: 'tiktok://user?username=radiomore.love' },
+        { id: '4', title: 'Facebook', url: 'https://www.facebook.com/share/1GPhLrt2u4/', mobileUrl: 'fb://facewebmodal/f?href=https://www.facebook.com/share/1GPhLrt2u4/' },
       ];
 
       const preloadedState = window.__PRELOADED_STATE__;
