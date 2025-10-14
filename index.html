@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LoveLuxury Links | Twój portal do luksusu, mody i stylu</title>
+    <meta name="description" content="Odkryj ekskluzywny świat LoveLuxury. Twoje centrum linków do wysokiej mody, bogatego stylu, zamożności i najbardziej relaksującej muzyki luksusowego stylu życia." />
+    <meta name="keywords" content="luksus, moda, styl, bogactwo, chill muzyka, wysoka moda, styl życia, ekskluzywne treści, LoveLuxury, muzyka dla mody" />
     <meta name="theme-color" content="#000000">
-    <title>LoveLuxury Links</title>
+    <meta name="author" content="LoveLuxury Life">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LoveLuxury Links | Luksus, Moda, Styl">
+    <meta property="og:description" content="Odkryj ekskluzywny świat LoveLuxury. Twoje centrum linków do wysokiej mody, bogatego stylu, zamożności i najbardziej relaksującej muzyki luksusowego stylu życia.">
+    <meta property="og:image" content="./avatar.jpg">
+    <meta property="og:site_name" content="LoveLuxury Life">
+    <meta property="og:locale" content="pl_PL">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LoveLuxury Links | Luksus, Moda, Styl">
+    <meta name="twitter:description" content="Odkryj ekskluzywny świat LoveLuxury. Twoje centrum linków do wysokiej mody, bogatego stylu, zamożności i najbardziej relaksującej muzyki luksusowego stylu życia.">
+    <meta name="twitter:image" content="./avatar.jpg">
+    
     <link rel="icon" href="./avatar.jpg" type="image/jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,7 +63,19 @@
     </style>
 </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <div style="font-family: 'Manrope', sans-serif; text-align: center; background-color: #111; color: white; padding: 2rem; min-height: 100vh;">
+          <img src="./avatar.jpg" alt="LoveLuxury Life - Logo marki luksusowego stylu życia i mody" style="width: 128px; height: 128px; border-radius: 50%; margin: 0 auto 1rem;">
+          <h1 style="font-size: 2.5rem; font-weight: bold;">LoveLuxury Life</h1>
+          <p style="font-size: 1.125rem; color: #d1d5db; margin-bottom: 2rem;">Tworzymy najlepsze treści o luksusie, modzie i stylu. Życie pełne bogactwa i smaku, przy ścieżce dźwiękowej relaksującej muzyki modowej. Odkryj nasz ekskluzywny świat poniżej.</p>
+          <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 640px; margin: auto;">
+              <a href="https://www.youtube.com/@radioluxurylove" style="display: block; background-color: rgba(31, 41, 55, 0.5); color: white; padding: 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">Youtube</a>
+              <a href="https://www.instagram.com/channel/Abbtoj2Ysc3rcLAG/" style="display: block; background-color: rgba(31, 41, 55, 0.5); color: white; padding: 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">Instagram</a>
+              <a href="https://www.tiktok.com/@radiomore.love" style="display: block; background-color: rgba(31, 41, 55, 0.5); color: white; padding: 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">TikTok</a>
+              <a href="https://www.facebook.com/share/1GPhLrt2u4/" style="display: block; background-color: rgba(31, 41, 55, 0.5); color: white; padding: 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">Facebook</a>
+          </div>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module">
       import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18.2.0';
@@ -211,8 +241,8 @@
       // from App.tsx
       const DEFAULT_PROFILE = {
         avatarUrl: "./avatar.jpg",
-        name: '#LLL',
-        bio: 'Curating the finest experiences and products for a life well-lived. Discover our exclusive collections below.',
+        name: 'LoveLuxury Life',
+        bio: 'Tworzymy najlepsze treści o luksusie, modzie i stylu. Życie pełne bogactwa i smaku, przy ścieżce dźwiękowej relaksującej muzyki modowej. Odkryj nasz ekskluzywny świat poniżej.',
       };
 
       const DEFAULT_LINKS = [
@@ -232,7 +262,7 @@
         
         const [isMusicPlaying, setIsMusicPlaying] = useState(false);
         const [isPromptVisible, setIsPromptVisible] = useState(true);
-        const [shareText, setShareText] = useState('Share');
+        const [shareText, setShareText] = useState('Udostępnij');
         const audioRef = useRef(null);
         const streamUrl = 'https://stream.radiohost.cloud/listen/test/radio.mp3';
 
@@ -244,7 +274,36 @@
         }, []);
 
         useEffect(() => {
-            // Initialize the Audio object but don't load/play until user interaction.
+            const scriptId = 'json-ld-structured-data';
+            const existingScript = document.getElementById(scriptId);
+            if (existingScript) {
+                existingScript.remove();
+            }
+
+            const script = document.createElement('script');
+            script.id = scriptId;
+            script.type = 'application/ld+json';
+            const structuredData = {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": profile.name,
+              "url": window.location.href,
+              "logo": new URL(profile.avatarUrl, window.location.href).href,
+              "description": profile.bio,
+              "sameAs": links.map(link => link.url)
+            };
+            script.innerHTML = JSON.stringify(structuredData, null, 2);
+            document.head.appendChild(script);
+
+            return () => {
+                const scriptOnCleanup = document.getElementById(scriptId);
+                if (scriptOnCleanup) {
+                  scriptOnCleanup.remove();
+                }
+            }
+        }, [profile, links]);
+
+        useEffect(() => {
             audioRef.current = new Audio(streamUrl);
             const audio = audioRef.current;
             
@@ -286,13 +345,13 @@
             } else {
               navigator.clipboard.writeText(window.location.href)
                 .then(() => {
-                  setShareText('Copied!');
-                  setTimeout(() => setShareText('Share'), 2000);
+                  setShareText('Skopiowano!');
+                  setTimeout(() => setShareText('Udostępnij'), 2000);
                 })
                 .catch(err => {
                   console.error('Failed to copy text: ', err);
-                  setShareText('Error!');
-                  setTimeout(() => setShareText('Share'), 2000);
+                  setShareText('Błąd!');
+                  setTimeout(() => setShareText('Udostępnij'), 2000);
                 });
             }
         };
@@ -314,11 +373,11 @@
               React.createElement('button', {
                   onClick: togglePlayPause,
                   className: "w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-lg p-0 border-0 bg-transparent focus:outline-none transition-transform duration-300 hover:scale-105 active:scale-100 shrink-0",
-                  'aria-label': isMusicPlaying ? 'Pause music' : 'Play music'
+                  'aria-label': isMusicPlaying ? 'Pauza' : 'Odtwarzaj muzykę'
               },
                   React.createElement('img', { 
                       src: profile.avatarUrl, 
-                      alt: "Profile", 
+                      alt: `Logo ${profile.name} - Twórcy luksusu, mody i stylu`, 
                       className: `w-full h-full rounded-full object-cover transition-opacity duration-300 ${isMusicPlaying ? 'animate-spin-vinyl opacity-50' : 'opacity-100'}`
                   })
               ),
@@ -326,8 +385,8 @@
                   className: "ml-3 flex items-center bg-gray-900/50 backdrop-blur-sm rounded-lg p-2 px-4 animate-pulse-bounce shadow-lg"
                 },
                 React.createElement('div', null,
-                    React.createElement('p', { className: "text-white text-sm font-bold hidden sm:block" }, "Click logo for more fun"),
-                    React.createElement('p', { className: "text-white text-sm font-bold sm:hidden" }, "Tap logo for more fun")
+                    React.createElement('p', { className: "text-white text-sm font-bold hidden sm:block" }, "Kliknij logo, by włączyć muzykę"),
+                    React.createElement('p', { className: "text-white text-sm font-bold sm:hidden" }, "Dotknij logo, by włączyć muzykę")
                 )
               )
             ),
