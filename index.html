@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -80,29 +81,22 @@
         'background/5.mp4',
         'background/6.mp4',
       ];
+      
+      const randomVideoSrc = VIDEO_SOURCES[Math.floor(Math.random() * VIDEO_SOURCES.length)];
 
       const VideoBackground = () => {
-        const [videoSrc, setVideoSrc] = useState(null);
-
-        useEffect(() => {
-          const randomIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
-          setVideoSrc(VIDEO_SOURCES[randomIndex]);
-        }, []);
-
         return (
           React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
-            videoSrc && (
-              React.createElement('video', {
-                key: videoSrc,
-                autoPlay: true,
-                loop: true,
-                muted: true,
-                playsInline: true,
-                className: "w-full h-full object-cover"
-              },
-                React.createElement('source', { src: videoSrc, type: "video/mp4" }),
-                "Your browser does not support the video tag."
-              )
+            React.createElement('video', {
+              key: randomVideoSrc,
+              autoPlay: true,
+              loop: true,
+              muted: true,
+              playsInline: true,
+              className: "w-full h-full object-cover"
+            },
+              React.createElement('source', { src: randomVideoSrc, type: "video/mp4" }),
+              "Your browser does not support the video tag."
             ),
             React.createElement('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm" })
           )
