@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -200,21 +199,36 @@
         const audioRef = useRef(null);
         const streamUrl = 'https://stream.radiohost.cloud/listen/test/radio.mp3';
 
-        const togglePlayPause = () => {
-            if (!audioRef.current) {
-                audioRef.current = new Audio(streamUrl);
+        useEffect(() => {
+          // Initialize Audio object on component mount
+          audioRef.current = new Audio(streamUrl);
+          
+          // Cleanup on unmount
+          return () => {
+            if (audioRef.current) {
+              audioRef.current.pause();
+              audioRef.current = null;
             }
+          };
+        }, [streamUrl]);
 
-            const newIsPlaying = !isMusicPlaying;
-            if (newIsPlaying) {
-                audioRef.current.play().catch(error => {
-                    console.error("Audio playback failed:", error);
-                    setIsMusicPlaying(false);
-                });
-            } else {
+        const togglePlayPause = () => {
+            if (!audioRef.current) return;
+
+            if (isMusicPlaying) {
                 audioRef.current.pause();
+                setIsMusicPlaying(false);
+            } else {
+                const playPromise = audioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        setIsMusicPlaying(true);
+                    }).catch(error => {
+                        console.error("Audio playback failed:", error);
+                        setIsMusicPlaying(false);
+                    });
+                }
             }
-            setIsMusicPlaying(newIsPlaying);
         };
 
         return (
