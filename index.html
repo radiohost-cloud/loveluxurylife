@@ -20,7 +20,7 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module">
-      import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
+      import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18.2.0';
       import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
 
       // from types.ts
@@ -86,6 +86,15 @@
         const [currentVideo, setCurrentVideo] = useState(
           () => VIDEO_SOURCES[Math.floor(Math.random() * VIDEO_SOURCES.length)]
         );
+        const videoRef = useRef(null);
+
+        useEffect(() => {
+          if (videoRef.current) {
+            videoRef.current.play().catch(error => {
+              console.warn("Video autoplay was prevented by the browser:", error);
+            });
+          }
+        }, [currentVideo]);
 
         const handleVideoEnd = () => {
           let nextVideo;
@@ -98,6 +107,7 @@
         return (
           React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
             React.createElement('video', {
+              ref: videoRef,
               key: currentVideo,
               src: currentVideo,
               autoPlay: true,
