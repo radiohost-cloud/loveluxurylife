@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -91,52 +90,79 @@
       ];
       
       const VideoBackground = () => {
-        const [videoIndex, setVideoIndex] = useState(
-          () => Math.floor(Math.random() * VIDEO_SOURCES.length)
-        );
-        const videoRef = useRef(null);
+        const videoRef1 = useRef(null);
+        const videoRef2 = useRef(null);
+        const [activePlayer, setActivePlayer] = useState(1);
+        
+        const [videoSources, setVideoSources] = useState(() => {
+            const firstIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
+            let secondIndex;
+            do {
+                secondIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
+            } while (secondIndex === firstIndex);
+            return { player1: VIDEO_SOURCES[firstIndex], player2: VIDEO_SOURCES[secondIndex] };
+        });
 
-        const handleErrorAndAdvance = () => {
-          console.warn('Video playback failed. Advancing to the next one.');
-          setVideoIndex(currentIndex => (currentIndex + 1) % VIDEO_SOURCES.length);
+        const scheduleNextVideo = (playerToUpdate) => {
+            const currentSrc1 = (videoRef1.current?.src || '').split('/').pop();
+            const currentSrc2 = (videoRef2.current?.src || '').split('/').pop();
+            let newSrc;
+            do {
+                const randomIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
+                newSrc = VIDEO_SOURCES[randomIndex];
+            } while (newSrc.endsWith(currentSrc1) || newSrc.endsWith(currentSrc2));
+            
+            setVideoSources(prev => ({ ...prev, [playerToUpdate]: newSrc }));
+        };
+        
+        const handleTransition = () => {
+            const nextPlayer = activePlayer === 1 ? 2 : 1;
+            const nextVideoElement = (nextPlayer === 1 ? videoRef1 : videoRef2).current;
+
+            if (nextVideoElement) {
+                nextVideoElement.play().then(() => {
+                    setActivePlayer(nextPlayer);
+                    setTimeout(() => {
+                        scheduleNextVideo(activePlayer === 1 ? 'player1' : 'player2');
+                    }, 1000); // Corresponds to transition duration
+                }).catch(error => {
+                    console.error(`Video player ${nextPlayer} failed to play, scheduling next.`, error);
+                    scheduleNextVideo(nextPlayer === 1 ? 'player1' : 'player2');
+                });
+            }
         };
 
         useEffect(() => {
-          const videoElement = videoRef.current;
-          if (videoElement) {
-            videoElement.src = VIDEO_SOURCES[videoIndex];
-            videoElement.load();
-            const playPromise = videoElement.play();
-            if (playPromise !== undefined) {
-              playPromise.catch(handleErrorAndAdvance);
+            if (videoRef1.current) {
+                videoRef1.current.play().catch(e => console.error("Initial play failed for player 1", e));
             }
-          }
-        }, [videoIndex]);
-
-        const handleVideoEnd = () => {
-          let nextIndex;
-          do {
-            nextIndex = Math.floor(Math.random() * VIDEO_SOURCES.length);
-          } while (nextIndex === videoIndex);
-          setVideoIndex(nextIndex);
-        };
+        }, []);
 
         return (
-          React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
-            React.createElement('video', {
-              ref: videoRef,
-              autoPlay: true,
-              muted: true,
-              playsInline: true,
-              onEnded: handleVideoEnd,
-              onError: handleErrorAndAdvance,
-              className: "w-full h-full object-cover"
-            }, "Your browser does not support the video tag."),
-            React.createElement('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm" })
-          )
+            React.createElement('div', { className: "fixed inset-0 -z-10", "aria-hidden": "true" },
+                React.createElement('video', {
+                    ref: videoRef1,
+                    src: videoSources.player1,
+                    muted: true,
+                    playsInline: true,
+                    onEnded: handleTransition,
+                    onError: handleTransition,
+                    className: `w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-1000 ease-in-out ${activePlayer === 1 ? 'opacity-100' : 'opacity-0'}`
+                }),
+                React.createElement('video', {
+                    ref: videoRef2,
+                    src: videoSources.player2,
+                    muted: true,
+                    playsInline: true,
+                    onEnded: handleTransition,
+                    onError: handleTransition,
+                    className: `w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-1000 ease-in-out ${activePlayer === 2 ? 'opacity-100' : 'opacity-0'}`
+                }),
+                React.createElement('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm" })
+            )
         );
       };
-      
+
       // from components/AudioPlayer.tsx
       const AudioPlayer = () => {
           const [isPlaying, setIsPlaying] = useState(false);
