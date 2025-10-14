@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -27,6 +28,19 @@
       }
       .animate-spin-vinyl {
         animation: spin 3s linear infinite;
+      }
+      @keyframes pulse-bounce {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.9;
+        }
+      }
+      .animate-pulse-bounce {
+        animation: pulse-bounce 2s infinite ease-in-out;
       }
     </style>
 </head>
@@ -234,16 +248,24 @@
         return (
           React.createElement('div', { className: "min-h-screen text-white selection:bg-red-500/30 relative overflow-hidden" },
             React.createElement(VideoBackground, null),
-            React.createElement('button', {
-                onClick: togglePlayPause,
-                className: "absolute top-4 left-4 sm:top-6 sm:left-6 w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-lg z-50 p-0 border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black/50 focus:ring-red-500 transition-transform duration-300 hover:scale-105 active:scale-100",
-                'aria-label': isMusicPlaying ? 'Pause music' : 'Play music'
-            },
-                React.createElement('img', { 
-                    src: profile.avatarUrl, 
-                    alt: "Profile", 
-                    className: `w-full h-full rounded-full object-cover ${isMusicPlaying ? 'animate-spin-vinyl' : ''}`
-                })
+            React.createElement('div', { className: "absolute top-4 left-4 sm:top-6 sm:left-6 z-50 flex items-center" },
+              React.createElement('button', {
+                  onClick: togglePlayPause,
+                  className: "w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-lg p-0 border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black/50 focus:ring-red-500 transition-transform duration-300 hover:scale-105 active:scale-100 shrink-0",
+                  'aria-label': isMusicPlaying ? 'Pause music' : 'Play music'
+              },
+                  React.createElement('img', { 
+                      src: profile.avatarUrl, 
+                      alt: "Profile", 
+                      className: `w-full h-full rounded-full object-cover transition-opacity duration-300 ${isMusicPlaying ? 'animate-spin-vinyl opacity-75' : 'opacity-100'}`
+                  })
+              ),
+              !isMusicPlaying && React.createElement('div', {
+                  className: "ml-3 bg-gray-900/50 backdrop-blur-sm rounded-lg p-2 px-4 animate-pulse-bounce shadow-lg"
+              },
+                  React.createElement('p', { className: "text-white text-sm font-bold hidden sm:block" }, "Click to Play Music"),
+                  React.createElement('p', { className: "text-white text-sm font-bold sm:hidden" }, "Tap to Play")
+              )
             ),
             React.createElement('div', { className: "container mx-auto px-4 py-8 md:py-16 relative z-10" },
               React.createElement('main', { className: "max-w-xl mx-auto flex flex-col items-center pt-32" },
