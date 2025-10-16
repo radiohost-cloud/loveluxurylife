@@ -39,17 +39,30 @@ const LinkCard = ({ link }) => {
   const handleClick = (e) => {
     if (isMobile && link.mobileUrl) {
       e.preventDefault();
-      
-      // Attempt to open the native app
-      window.location.href = link.mobileUrl;
 
-      // Fallback to the web URL after a delay, but only if the user is still on the page.
-      // This prevents the web URL from opening if the app successfully launched.
-      setTimeout(() => {
-        if (document.hasFocus()) {
+      const handleVisibilityChange = () => {
+        // If the tab becomes hidden, it means the app probably opened successfully.
+        // In that case, we cancel the fallback.
+        if (document.hidden) {
+          clearTimeout(fallbackTimeout);
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+        }
+      };
+      
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      const fallbackTimeout = setTimeout(() => {
+        // Clean up the listener after the timeout has passed.
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        // If the tab is still visible after the delay, the app likely didn't open.
+        // We check `!document.hidden` one last time just in case.
+        if (!document.hidden) {
            window.open(link.url, '_blank', 'noopener,noreferrer');
         }
       }, 2500);
+
+      // Attempt to open the native app
+      window.location.href = link.mobileUrl;
     }
   };
 
@@ -209,7 +222,7 @@ const DEFAULT_LINKS = [
   { id: '1', title: 'Youtube', url: 'https://www.youtube.com/@radioluxurylove', mobileUrl: 'youtube://www.youtube.com/@radioluxurylove' },
   { id: '2', title: 'Instagram', url: 'https://www.instagram.com/channel/Abbtoj2Ysc3rcLAG/', mobileUrl: 'instagram://channel?id=Abbtoj2Ysc3rcLAG' },
   { id: '3', title: 'TikTok', url: 'https://www.tiktok.com/@radiomore.love', mobileUrl: 'tiktok://user?username=radiomore.love' },
-  { id: '4', title: 'Facebook', url: 'https://www.facebook.com/share/1GPhLrt2u4/', mobileUrl: 'fb://facewebmodal/f?href=https://www.facebook.com/share/1GPhLrt2u4/' },
+  { id: '4', title: 'Facebook', url: 'https://www.facebook.com/share/1At1j1eXh1/?mibextid=wwXIfr', mobileUrl: 'fb://facewebmodal/f?href=https://www.facebook.com/share/1At1j1eXh1/?mibextid=wwXIfr' },
 ];
 
 const preloadedState = window.__PRELOADED_STATE__;
