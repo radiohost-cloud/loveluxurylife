@@ -39,30 +39,17 @@ const LinkCard = ({ link }) => {
   const handleClick = (e) => {
     if (isMobile && link.mobileUrl) {
       e.preventDefault();
-
-      const handleVisibilityChange = () => {
-        // If the tab becomes hidden, it means the app probably opened successfully.
-        // In that case, we cancel the fallback.
-        if (document.hidden) {
-          clearTimeout(fallbackTimeout);
-          document.removeEventListener('visibilitychange', handleVisibilityChange);
-        }
-      };
       
-      document.addEventListener('visibilitychange', handleVisibilityChange);
+      // Attempt to open the native app
+      window.location.href = link.mobileUrl;
 
-      const fallbackTimeout = setTimeout(() => {
-        // Clean up the listener after the timeout has passed.
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        // If the tab is still visible after the delay, the app likely didn't open.
-        // We check `!document.hidden` one last time just in case.
-        if (!document.hidden) {
+      // Fallback to the web URL after a delay, but only if the user is still on the page.
+      // This prevents the web URL from opening if the app successfully launched.
+      setTimeout(() => {
+        if (document.hasFocus()) {
            window.open(link.url, '_blank', 'noopener,noreferrer');
         }
       }, 2500);
-
-      // Attempt to open the native app
-      window.location.href = link.mobileUrl;
     }
   };
 
