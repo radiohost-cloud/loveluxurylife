@@ -2,12 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>#LLL Links | LoveLuxury Life - Your Portal to Luxury, Fashion & Style</title>
     <meta name="description" content="Discover the exclusive world of LoveLuxury with #LLL. Your link hub for high fashion, opulent style, wealth, and the most relaxing chill fashion lifestyle music." />
     <meta name="keywords" content="LLL, #LLL, luxury, fashion, style, wealth, chill music, high fashion, lifestyle, exclusive content, LoveLuxury, fashion music" />
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="author" content="LoveLuxury Life">
 
@@ -38,6 +37,17 @@
     <style>
       body {
         font-family: 'Manrope', sans-serif;
+      }
+      /* Mobile Safari scaling and safe area fixes */
+      #root > div {
+        min-height: 100vh; /* Fallback for older browsers */
+        min-height: 100dvh; /* Use dynamic viewport height for mobile */
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+      /* Adjust fixed button for bottom safe area */
+      div.fixed.bottom-5 {
+        /* 1.25rem is Tailwind's 'bottom-5' */
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
       }
       @keyframes vibrate {
         0%, 100% { transform: rotate(0deg); }
