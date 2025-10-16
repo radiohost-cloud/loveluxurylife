@@ -78,6 +78,30 @@
         backface-visibility: hidden;
       }
     </style>
+    <script>
+      // Disable right-click
+      document.addEventListener('contextmenu', event => event.preventDefault());
+
+      // Disable specific key combinations
+      document.addEventListener('keydown', event => {
+        // F12
+        if (event.keyCode === 123) {
+          event.preventDefault();
+        }
+        // Ctrl+Shift+I
+        if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'i')) {
+          event.preventDefault();
+        }
+        // Ctrl+Shift+J
+        if (event.ctrlKey && event.shiftKey && (event.key === 'J' || event.key === 'j')) {
+          event.preventDefault();
+        }
+        // Ctrl+U
+        if (event.ctrlKey && (event.key === 'U' || event.key === 'u')) {
+          event.preventDefault();
+        }
+      });
+    </script>
 </head>
   <body>
     <noscript>
@@ -258,7 +282,7 @@
       // from App.tsx
       const DEFAULT_PROFILE = {
         avatarUrl: "./avatar.jpg",
-        name: '#LLL',
+        name: 'LoveLuxury Life',
         bio: 'Curating the finest in luxury, fashion, and style. A life of wealth and taste, set to a soundtrack of chill fashion music. Explore our exclusive world below.',
       };
 
@@ -282,7 +306,7 @@
         const [isVanishing, setIsVanishing] = useState(false);
         const [shareText, setShareText] = useState('Share');
         const audioRef = useRef(null);
-        const streamUrl = 'https://stream.radiohost.cloud/listen/live/radio.mp3';
+        const streamUrl = 'https://stream.radiohost.cloud/listen/test/radio.mp3';
 
         useEffect(() => {
           const timer = setTimeout(() => {
